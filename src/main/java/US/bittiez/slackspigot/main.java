@@ -71,11 +71,14 @@ public class main extends JavaPlugin implements Listener {
             enabled = true;
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, e.getMessage());
+            e.printStackTrace();
         }
 
         if(enabled) {
             PluginManager pm = getServer().getPluginManager();
             pm.registerEvents(this, this);
+        } else {
+            getLogger().log(Level.INFO, "Could not load slack-spigot.");
         }
     }
 

@@ -1,7 +1,7 @@
 name: spigot-slack
 version: 1.0.0
 author: bittiez
-main: US.bittiez.slackspigot
+main: US.bittiez.slackspigot.main
 commands:
     SSReload:
         description: This will reload the config.

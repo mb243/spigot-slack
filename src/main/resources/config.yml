@@ -2,3 +2,5 @@ slack-bot-token: ""
 
 chat-channel: ""
 chat-format: "[PLAYER]: [MSG]"
+first-join-format: "Welcome [PLAYER] to the server!"
+normal-join-format: "[PLAYER] has logged in."

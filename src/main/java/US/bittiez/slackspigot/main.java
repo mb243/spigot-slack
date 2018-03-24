@@ -66,7 +66,14 @@ public class main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
+        String formatterMsg = "";
+        if(e.getPlayer().hasPlayedBefore()){
+            formatterMsg = config.getString("first-join-format").replace("[PLAYER]", e.getPlayer().getName());
+        } else {
+            formatterMsg = config.getString("normal-join-format").replace("[PLAYER]", e.getPlayer().getName());
+        }
 
+        session.sendMessage(chatChannel, formatterMsg);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

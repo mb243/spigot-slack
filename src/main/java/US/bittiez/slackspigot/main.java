@@ -1,14 +1,19 @@
 package US.bittiez.slackspigot;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.TimeUnit;
@@ -17,18 +22,28 @@ import java.util.logging.Level;
 public class main extends JavaPlugin implements Listener {
     private FileConfiguration config = getConfig();
     private SlackSession session;
+    private SlackChannel chatChannel;
 
     @Override
     public void onEnable(){
         createConfig();
+        Boolean enabled = false;
         try {
             session = SlackSessionFactory.getSlackSessionBuilder(config.getString("slack-bot-token"))
                     .withAutoreconnectOnDisconnection(true)
                     .withConnectionHeartbeat(10, TimeUnit.SECONDS)
                     .build();
             session.connect();
+
+            chatChannel = session.findChannelByName(config.getString("chat-channel"));
+            enabled = true;
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, e.getMessage());
+        }
+
+        if(enabled) {
+            PluginManager pm = getServer().getPluginManager();
+            pm.registerEvents(this, this);
         }
     }
 
@@ -45,13 +60,27 @@ public class main extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
+    public void onPlayerQuit(PlayerQuitEvent e){
 
     }
 
     @EventHandler
-    public void onPlayerChatEvent(AsyncPlayerChatEvent e) {
+    public void onPlayerJoin(PlayerJoinEvent e) {
 
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerChatEvent(AsyncPlayerChatEvent e) {
+        if(e.isCancelled())
+            return;
+        if(e.getMessage().length() < 1)
+            return;
+
+        String formattedMsg = config.getString("chat-format")
+                .replace("[PLAYER]", e.getPlayer().getName())
+                .replace("[MSG]", e.getMessage());
+
+        session.sendMessage(chatChannel, formattedMsg);
     }
 
     private void createConfig() {

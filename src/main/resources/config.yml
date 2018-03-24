@@ -1,1 +1,4 @@
 slack-bot-token: ""
+
+chat-channel: ""
+chat-format: "[PLAYER]: [MSG]"

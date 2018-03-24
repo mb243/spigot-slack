@@ -1,0 +1,12 @@
+name: spigot-slack
+version: 1.0.0
+author: bittiez
+main: US.bittiez.slackspigot
+commands:
+    SSReload:
+        description: This will reload the config.
+        usage: /SSReload
+        permission: spigotslack.reload
+permissions:
+    spigotslack.reload:
+        description: This will reload the config.

@@ -1,6 +1,5 @@
 package US.bittiez.slackspigot;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
@@ -61,7 +60,8 @@ public class main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e){
-
+        String formattedMsg = config.getString("player-quit-format").replace("[PLAYER]", e.getPlayer().getName());
+        sendMessageToSlack(chatChannel, formattedMsg);
     }
 
     @EventHandler
@@ -73,7 +73,7 @@ public class main extends JavaPlugin implements Listener {
             formatterMsg = config.getString("normal-join-format").replace("[PLAYER]", e.getPlayer().getName());
         }
 
-        session.sendMessage(chatChannel, formatterMsg);
+        sendMessageToSlack(chatChannel, formatterMsg);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -82,12 +82,20 @@ public class main extends JavaPlugin implements Listener {
             return;
         if(e.getMessage().length() < 1)
             return;
+        if(e.getPlayer().hasPermission("spigotslack.ignore"))
+            return;
 
         String formattedMsg = config.getString("chat-format")
                 .replace("[PLAYER]", e.getPlayer().getName())
                 .replace("[MSG]", e.getMessage());
 
-        session.sendMessage(chatChannel, formattedMsg);
+        sendMessageToSlack(chatChannel, formattedMsg);
+    }
+
+    private void sendMessageToSlack(SlackChannel chan, String msg){
+        if(msg.length() < 1)
+            return;
+        session.sendMessage(chan, msg);
     }
 
     private void createConfig() {

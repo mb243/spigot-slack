@@ -27,7 +27,6 @@ public class main extends JavaPlugin implements Listener {
     private FileConfiguration config = getConfig();
     private SlackSession session;
     private SlackChannel chatChannel;
-    private SlackMessagePostedListener messagePostedListener;
 
     @Override
     public void onEnable(){
@@ -42,18 +41,16 @@ public class main extends JavaPlugin implements Listener {
 
             chatChannel = session.findChannelByName(config.getString("chat-channel"));
 
-            messagePostedListener = new SlackMessagePostedListener()
-            {
+            SlackMessagePostedListener messagePostedListener = new SlackMessagePostedListener() {
                 @Override
-                public void onEvent(SlackMessagePosted event, SlackSession session)
-                {
+                public void onEvent(SlackMessagePosted event, SlackSession session) {
                     SlackChannel channelOnWhichMessageWasPosted = event.getChannel();
                     String messageContent = event.getMessageContent();
                     SlackUser messageSender = event.getSender();
 
                     List<String> channels = config.getStringList("incoming-channels");
-                    for (String chan : channels){
-                        if (channelOnWhichMessageWasPosted.getName() == chan){
+                        for (String chan : channels) {
+                        if (channelOnWhichMessageWasPosted.getName() == chan) {
                             String formattedMsg = config.getString("incoming-chat-format")
                                     .replace("[DISPLAYNAME]", messageSender.getUserName())
                                     .replace("[MSG]", messageContent)
@@ -72,6 +69,7 @@ public class main extends JavaPlugin implements Listener {
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, e.getMessage());
             e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
         }
 
         if(enabled) {

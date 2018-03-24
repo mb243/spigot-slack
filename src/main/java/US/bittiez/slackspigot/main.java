@@ -60,13 +60,17 @@ public class main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e){
+        if(e.getPlayer().hasPermission("spigotslack.silent"))
+            return;
         String formattedMsg = config.getString("player-quit-format").replace("[PLAYER]", e.getPlayer().getName());
         sendMessageToSlack(chatChannel, formattedMsg);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        String formatterMsg = "";
+        String formatterMsg;
+        if(e.getPlayer().hasPermission("spigotslack.silent"))
+            return;
         if(e.getPlayer().hasPlayedBefore()){
             formatterMsg = config.getString("first-join-format").replace("[PLAYER]", e.getPlayer().getName());
         } else {

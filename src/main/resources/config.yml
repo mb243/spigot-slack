@@ -9,3 +9,6 @@ player-quit-format: "[PLAYER] has left the server."
 #These are the slack channels that will be sent to the server chat:
 incoming-channels: ["chan1", "chan2"]
 incoming-chat-format: "[[CHANNEL]][DISPLAYNAME]: [MSG]"
+
+#ignore these ids from slack
+ignore-ids: [""]

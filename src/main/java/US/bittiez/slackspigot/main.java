@@ -36,6 +36,9 @@ public class main extends JavaPlugin implements Listener {
 
             if(event.getAttachments().size() > 0)
                 return;
+            for(String id : config.getStringList("ignore-ids"))
+                if (messageSender.getId().equals(id))
+                    return;
 
             List<String> channels = config.getStringList("incoming-channels");
             for (String chan : channels) {

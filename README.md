@@ -4,6 +4,8 @@ Slack plugin for Spigot
 ## Configuration file
 
 ```
+# Bot User OAuth Access Token:
+# You will need to have configured a bot user and installed your app first
 slack-bot-token: ""
 
 chat-channel: ""

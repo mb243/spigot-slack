@@ -19,8 +19,7 @@ https://workspace.slack.com/services/BAAAAAAQ
 The bot ID is the very last part of that URL: `BAAAAAAQ`. Simply add this to the `ignore-ids`, like so:
 
 ```
-ignore-ids:
-- BAAAAAAQ
+ignore-ids: ["BAAAAAAQ"]
 ```
 
 

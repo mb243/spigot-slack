@@ -1,7 +1,7 @@
 name: spigot-slack
 version: 1.0.0
 author: bittiez
-main: US.bittiez.slackspigot
+main: US.bittiez.slackspigot.main
 commands:
     SSReload:
         description: This will reload the config.
@@ -10,3 +10,7 @@ commands:
 permissions:
     spigotslack.reload:
         description: This will reload the config.
+    spigotslack.ignore:
+        description: Anyone with this permission will not have their messages sent to slack.
+    spigotslack.silent:
+        description: Anyone with this perm will not have any join or quit messages sent to slack.

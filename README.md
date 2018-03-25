@@ -10,3 +10,5 @@ Slack plugin for Spigot
 `spigotslack.ignore`: Prevent messages from being sent to Slack
 
 `spigotslack.silent`: Prevent join/quit messages from being sent to Slack
+
+`spigotslack.reload`: Use `/ssreload`

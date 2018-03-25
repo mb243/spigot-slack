@@ -1,8 +1,6 @@
 package US.bittiez.slackspigot;
 
-import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.SlackUser;
+import com.ullink.slack.simpleslackapi.*;
 import com.ullink.slack.simpleslackapi.events.EventType;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
@@ -11,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -101,7 +100,7 @@ public class main extends JavaPlugin implements Listener {
         if(e.getPlayer().hasPermission("spigotslack.silent"))
             return;
         String formattedMsg = config.getString("player-quit-format").replace("[PLAYER]", e.getPlayer().getName());
-        sendMessageToSlack(chatChannel, formattedMsg);
+        sendMessageToSlack(chatChannel, formattedMsg, e.getPlayer());
     }
 
     @EventHandler
@@ -115,7 +114,7 @@ public class main extends JavaPlugin implements Listener {
             formatterMsg = config.getString("normal-join-format").replace("[PLAYER]", e.getPlayer().getName());
         }
 
-        sendMessageToSlack(chatChannel, formatterMsg);
+        sendMessageToSlack(chatChannel, formatterMsg, e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -131,14 +130,18 @@ public class main extends JavaPlugin implements Listener {
                 .replace("[PLAYER]", e.getPlayer().getName())
                 .replace("[MSG]", e.getMessage());
 
-        sendMessageToSlack(chatChannel, formattedMsg);
+        sendMessageToSlack(chatChannel, formattedMsg, e.getPlayer());
     }
 
-    private void sendMessageToSlack(SlackChannel chan, String msg){
-        if(msg.length() < 1)
+    private void sendMessageToSlack(SlackChannel chan, String formatterMsg, Player player){
+        if(formatterMsg.length() < 1)
             return;
-        msg = ChatColor.stripColor(msg);
-        session.sendMessage(chan, msg);
+        formatterMsg = ChatColor.stripColor(formatterMsg);
+
+        SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(formatterMsg).build();
+        SlackChatConfiguration config = SlackChatConfiguration.getConfiguration().withName(player.getName()).withIcon("https://www.mc-heads.net/avatar/" + player.getUniqueId());
+        session.sendMessage(chatChannel, msg, config);
+        //session.sendMessage(chan, msg);
     }
 
     private void createConfig() {

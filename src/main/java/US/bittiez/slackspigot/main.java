@@ -3,6 +3,7 @@ package US.bittiez.slackspigot;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackUser;
+import com.ullink.slack.simpleslackapi.events.EventType;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
@@ -27,6 +28,27 @@ public class main extends JavaPlugin implements Listener {
     private FileConfiguration config = getConfig();
     private SlackSession session;
     private SlackChannel chatChannel;
+    private SlackMessagePostedListener messagePostedListener = new SlackMessagePostedListener() {
+        @Override
+        public void onEvent(SlackMessagePosted event, SlackSession session) {
+            SlackChannel channelOnWhichMessageWasPosted = event.getChannel();
+            String messageContent = event.getMessageContent();
+            SlackUser messageSender = event.getSender();
+
+            List<String> channels = config.getStringList("incoming-channels");
+            for (String chan : channels) {
+                if (channelOnWhichMessageWasPosted.getName().equals(chan)) {
+                    String formattedMsg = config.getString("incoming-chat-format")
+                            .replace("[DISPLAYNAME]", messageSender.getUserName())
+                            .replace("[MSG]", messageContent)
+                            .replace("[CHANNEL]", channelOnWhichMessageWasPosted.getName());
+                    formattedMsg = ChatColor.translateAlternateColorCodes('&', formattedMsg);
+                    getServer().broadcastMessage(formattedMsg);
+                    break;
+                }
+            }
+        }
+    };
 
     @Override
     public void onEnable(){
@@ -41,27 +63,6 @@ public class main extends JavaPlugin implements Listener {
 
             chatChannel = session.findChannelByName(config.getString("chat-channel"));
 
-            SlackMessagePostedListener messagePostedListener = new SlackMessagePostedListener() {
-                @Override
-                public void onEvent(SlackMessagePosted event, SlackSession session) {
-                    SlackChannel channelOnWhichMessageWasPosted = event.getChannel();
-                    String messageContent = event.getMessageContent();
-                    SlackUser messageSender = event.getSender();
-
-                    List<String> channels = config.getStringList("incoming-channels");
-                        for (String chan : channels) {
-                        if (channelOnWhichMessageWasPosted.getName() == chan) {
-                            String formattedMsg = config.getString("incoming-chat-format")
-                                    .replace("[DISPLAYNAME]", messageSender.getUserName())
-                                    .replace("[MSG]", messageContent)
-                                    .replace("[CHANNEL]", channelOnWhichMessageWasPosted.getName());
-                            formattedMsg = ChatColor.translateAlternateColorCodes('&', formattedMsg);
-                            getServer().broadcastMessage(formattedMsg);
-                            break;
-                        }
-                    }
-                }
-            };
             //add it to the session
             session.addMessagePostedListener(messagePostedListener);
 
@@ -105,7 +106,7 @@ public class main extends JavaPlugin implements Listener {
         String formatterMsg;
         if(e.getPlayer().hasPermission("spigotslack.silent"))
             return;
-        if(e.getPlayer().hasPlayedBefore()){
+        if(!e.getPlayer().hasPlayedBefore()){
             formatterMsg = config.getString("first-join-format").replace("[PLAYER]", e.getPlayer().getName());
         } else {
             formatterMsg = config.getString("normal-join-format").replace("[PLAYER]", e.getPlayer().getName());

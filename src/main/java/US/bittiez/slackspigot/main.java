@@ -34,6 +34,8 @@ public class main extends JavaPlugin implements Listener {
             String messageContent = event.getMessageContent();
             SlackUser messageSender = event.getSender();
 
+            if(messageSender.getId().equals(session.sessionPersona().getId()))
+                return;
             if(event.getAttachments().size() > 0)
                 return;
             for(String id : config.getStringList("ignore-ids"))

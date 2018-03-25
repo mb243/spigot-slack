@@ -12,3 +12,6 @@ incoming-chat-format: "[[CHANNEL]][DISPLAYNAME]: [MSG]"
 
 #ignore these ids from slack
 ignore-ids: [""]
+
+#Ignore messages with attachments
+ignore-attachments: false

@@ -36,8 +36,16 @@ public class main extends JavaPlugin implements Listener {
 
             if(messageSender.getId().equals(session.sessionPersona().getId()))
                 return;
-            if(event.getAttachments().size() > 0)
-                return;
+
+            if(event.getAttachments().size() > 0) {
+                if(config.getBoolean("ignore-attachments", false))
+                    return;
+                messageContent = "";
+                for (SlackAttachment attachment : event.getAttachments()) {
+                    messageContent += "[ " + attachment.getAuthorLink() + " ]";
+                }
+            }
+
             for(String id : config.getStringList("ignore-ids"))
                 if (messageSender.getId().equals(id))
                     return;

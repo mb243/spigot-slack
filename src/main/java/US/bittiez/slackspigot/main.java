@@ -35,6 +35,9 @@ public class main extends JavaPlugin implements Listener {
             String messageContent = event.getMessageContent();
             SlackUser messageSender = event.getSender();
 
+            if(event.getAttachments().size() > 0)
+                return;
+
             List<String> channels = config.getStringList("incoming-channels");
             for (String chan : channels) {
                 if (channelOnWhichMessageWasPosted.getName().equals(chan)) {

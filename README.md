@@ -4,8 +4,17 @@ Slack plugin for Spigot
 ## Configuration file
 
 ```
-#ignore these ids from slack
-ignore-ids: [""]
+slack-bot-token: ""
+
+chat-channel: ""
+chat-format: "[PLAYER]: [MSG]"
+first-join-format: "Welcome [PLAYER] to the server!"
+normal-join-format: "[PLAYER] has logged in."
+player-quit-format: "[PLAYER] has left the server."
+
+#These are the slack channels that will be sent to the server chat:
+incoming-channels: ["chan1", "chan2"]
+incoming-chat-format: "[[CHANNEL]][DISPLAYNAME]: [MSG]"
 ```
 
 ## Ignoring the bot's own messages

@@ -1,7 +1,7 @@
 slack-bot-token: ""
 
 chat-channel: ""
-chat-format: "[PLAYER]: [MSG]"
+chat-format: "[MSG]"
 first-join-format: "Welcome [PLAYER] to the server!"
 normal-join-format: "[PLAYER] has logged in."
 player-quit-format: "[PLAYER] has left the server."
@@ -12,3 +12,6 @@ incoming-chat-format: "[[CHANNEL]][DISPLAYNAME]: [MSG]"
 
 #ignore these ids from slack
 ignore-ids: [""]
+
+#Ignore messages with attachments
+ignore-attachments: false

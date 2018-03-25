@@ -1,7 +1,7 @@
 package US.bittiez.slackspigot;
 
+import com.google.gson.GsonBuilder;
 import com.ullink.slack.simpleslackapi.*;
-import com.ullink.slack.simpleslackapi.events.EventType;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
@@ -36,8 +36,16 @@ public class main extends JavaPlugin implements Listener {
 
             if(messageSender.getId().equals(session.sessionPersona().getId()))
                 return;
-            if(event.getAttachments().size() > 0)
-                return;
+
+            getLogger().log(Level.INFO, event.getJsonSource());
+            MessagePosted mp = new GsonBuilder().create().fromJson(event.getJsonSource(), MessagePosted.class);
+
+            if(mp.file != null) {
+                if(config.getBoolean("ignore-attachments", false))
+                    return;
+                messageContent = mp.file.name + ": " + mp.file.permalink;
+            }
+
             for(String id : config.getStringList("ignore-ids"))
                 if (messageSender.getId().equals(id))
                     return;
@@ -48,7 +56,7 @@ public class main extends JavaPlugin implements Listener {
                     String formattedMsg = config.getString("incoming-chat-format")
                             .replace("[DISPLAYNAME]", messageSender.getUserName())
                             .replace("[MSG]", messageContent)
-                            .replace("[CHANNEL]", channelOnWhichMessageWasPosted.getName());
+                            .replace("[CHANNEL]", event.getChannel().getName());
                     formattedMsg = ChatColor.translateAlternateColorCodes('&', formattedMsg);
                     getServer().broadcastMessage(formattedMsg);
                     break;

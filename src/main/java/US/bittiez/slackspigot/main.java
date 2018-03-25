@@ -1,7 +1,6 @@
 package US.bittiez.slackspigot;
 
 import com.ullink.slack.simpleslackapi.*;
-import com.ullink.slack.simpleslackapi.events.EventType;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;

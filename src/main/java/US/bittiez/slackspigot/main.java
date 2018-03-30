@@ -1,7 +1,10 @@
 package US.bittiez.slackspigot;
 
-import com.google.gson.GsonBuilder;
-import com.ullink.slack.simpleslackapi.*;
+import US.bittiez.slackspigot.events.MessageReceived;
+import com.ullink.slack.simpleslackapi.SlackChannel;
+import com.ullink.slack.simpleslackapi.SlackChatConfiguration;
+import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
+import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
@@ -20,7 +23,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -28,42 +32,13 @@ public class main extends JavaPlugin implements Listener {
     private FileConfiguration config = getConfig();
     private SlackSession session;
     private SlackChannel chatChannel;
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
+
     private SlackMessagePostedListener messagePostedListener = new SlackMessagePostedListener() {
         @Override
-        public void onEvent(SlackMessagePosted event, SlackSession session) {
-            SlackChannel channelOnWhichMessageWasPosted = event.getChannel();
-            String messageContent = event.getMessageContent();
-            SlackUser messageSender = event.getSender();
-
-            if(messageSender.getId().equals(session.sessionPersona().getId()))
-                return;
-
-            //getLogger().log(Level.INFO, event.getJsonSource());
-            MessagePosted mp = new GsonBuilder().create().fromJson(event.getJsonSource(), MessagePosted.class);
-
-            if(mp.file != null) {
-                if(config.getBoolean("ignore-attachments", false))
-                    return;
-                messageContent = mp.file.name + ": " + mp.file.permalink;
-            }
-
-            for(String id : config.getStringList("ignore-ids"))
-                if (messageSender.getId().equals(id))
-                    return;
-
-            List<String> channels = config.getStringList("incoming-channels");
-            for (String chan : channels) {
-                if (channelOnWhichMessageWasPosted.getName().equals(chan)) {
-                    String formattedMsg = config.getString("incoming-chat-format")
-                            .replace("[DISPLAYNAME]", messageSender.getUserName())
-                            .replace("[MSG]", messageContent)
-                            .replace("[CHANNEL]", event.getChannel().getName());
-                    formattedMsg = ChatColor.translateAlternateColorCodes('&', formattedMsg);
-                    getServer().broadcastMessage(formattedMsg);
-                    break;
-                }
-            }
-        }
+        public void onEvent(SlackMessagePosted event, SlackSession session) { executor.execute(
+                new MessageReceived(event, session, config, getServer())
+        ); }
     };
 
 
@@ -164,7 +139,7 @@ public class main extends JavaPlugin implements Listener {
 
         SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(formatterMsg).build();
         SlackChatConfiguration config = SlackChatConfiguration.getConfiguration().withName(player.getName()).withIcon("https://www.mc-heads.net/avatar/" + player.getUniqueId());
-        session.sendMessage(chatChannel, msg, config);
+        session.sendMessage(chan, msg, config);
         //session.sendMessage(chan, msg);
     }
 

@@ -3,23 +3,7 @@ Slack plugin for Spigot
 
 ## Configuration file
 
-```
-# Bot User OAuth Access Token:
-# You will need to have configured a bot user and installed your app first
-slack-bot-token: ""
-
-chat-channel: ""
-chat-format: "[PLAYER]: [MSG]"
-first-join-format: "Welcome [PLAYER] to the server!"
-normal-join-format: "[PLAYER] has logged in."
-player-quit-format: "[PLAYER] has left the server."
-player-advancement-format: "[PLAYER] has earned the advancement: [ADVANCEMENT]"
-
-#These are the slack channels that will be sent to the server chat:
-incoming-channels: ["chan1", "chan2"]
-incoming-chat-format: "[[CHANNEL]][DISPLAYNAME]: [MSG]"
-ignore-ids: ["BAAAAAAQ"]
-```
+The default configuration file is available [here](https://github.com/mb243/spigot-slack/blob/update-readme/src/main/resources/config.yml).
 
 ## Ignoring the bot's own messages
 

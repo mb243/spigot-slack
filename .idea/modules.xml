@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/slackspigot.iml" filepath="$PROJECT_DIR$/slackspigot.iml" />
       <module fileurl="file://$PROJECT_DIR$/spigot-slack.iml" filepath="$PROJECT_DIR$/spigot-slack.iml" />
     </modules>
   </component>

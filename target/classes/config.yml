@@ -16,3 +16,6 @@ ignore-ids: [""]
 
 #Ignore messages with attachments
 ignore-attachments: false
+
+#remove mentions? (If false, mentions will be sent to minecraft
+remove-mentions: false

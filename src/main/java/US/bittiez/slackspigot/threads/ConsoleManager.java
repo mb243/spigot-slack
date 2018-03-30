@@ -49,7 +49,8 @@ public class ConsoleManager extends AbstractAppender {
     private void sendMessageToSlack(String message){
         if(message.length() < 1)
             return;
-        message = ChatColor.stripColor(message);
+        message = ChatColor.stripColor(message); //Removes colors
+        message = message.replaceAll("(\\[m)$", ""); //Replaces the weird [m at the end of console chat messages
 
         SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(message).build();
         SlackChatConfiguration chatConfig = SlackChatConfiguration.getConfiguration().withName("CONSOLE").withIcon(config.getString("console-avatar-url", "http://i65.tinypic.com/14jak2x.png"));

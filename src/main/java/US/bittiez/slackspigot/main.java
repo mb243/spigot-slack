@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
@@ -37,7 +38,7 @@ public class main extends JavaPlugin implements Listener {
             if(messageSender.getId().equals(session.sessionPersona().getId()))
                 return;
 
-            getLogger().log(Level.INFO, event.getJsonSource());
+            //getLogger().log(Level.INFO, event.getJsonSource());
             MessagePosted mp = new GsonBuilder().create().fromJson(event.getJsonSource(), MessagePosted.class);
 
             if(mp.file != null) {
@@ -64,6 +65,7 @@ public class main extends JavaPlugin implements Listener {
             }
         }
     };
+
 
     @Override
     public void onEnable(){
@@ -106,6 +108,15 @@ public class main extends JavaPlugin implements Listener {
             }
         }
         return false;
+    }
+
+    @EventHandler
+    public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent e){
+//        String eventName = "";
+//        String formattedMsg = config.getString("player-advancement-format", "[ADVANCEMENT]")
+//                .replace("[PLAYER]", e.getPlayer().getName())
+//                .replace("[ADVANCEMENT]", eventName);
+//        sendMessageToSlack(chatChannel, formattedMsg, e.getPlayer());
     }
 
     @EventHandler

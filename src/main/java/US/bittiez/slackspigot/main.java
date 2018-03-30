@@ -1,6 +1,7 @@
 package US.bittiez.slackspigot;
 
 import US.bittiez.slackspigot.events.MessageReceived;
+import US.bittiez.slackspigot.threads.ConsoleManager;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackChatConfiguration;
 import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
@@ -33,6 +34,7 @@ public class main extends JavaPlugin implements Listener {
     private SlackSession session;
     private SlackChannel chatChannel;
     private ExecutorService executor = Executors.newFixedThreadPool(1);
+    private ConsoleManager consoleManager;
 
     private SlackMessagePostedListener messagePostedListener = new SlackMessagePostedListener() {
         @Override
@@ -68,6 +70,8 @@ public class main extends JavaPlugin implements Listener {
         if(enabled) {
             PluginManager pm = getServer().getPluginManager();
             pm.registerEvents(this, this);
+            if(config.getBoolean("enable-console", false))
+                consoleManager = new ConsoleManager(session.findChannelByName(config.getString("console-channel", "abc123nochannelforme")), session, config);
         } else {
             getLogger().log(Level.INFO, "Could not load slack-spigot.");
         }

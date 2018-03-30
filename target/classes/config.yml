@@ -19,3 +19,8 @@ ignore-attachments: false
 
 #remove mentions? (If false, mentions will be sent to minecraft
 remove-mentions: false
+
+#Set to false if you don't want to send console messages to Slack
+enable-console: true
+console-channel: "console-chan"
+console-avatar-url: ""

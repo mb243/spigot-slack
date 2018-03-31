@@ -24,3 +24,7 @@ remove-mentions: false
 enable-console: true
 console-channel: "console-chan"
 console-avatar-url: ""
+#display console timestamp
+console-time: true
+#See https://developer.android.com/reference/java/text/SimpleDateFormat.html for possible format patterns
+console-time-format: "[HH:mm:ss] "

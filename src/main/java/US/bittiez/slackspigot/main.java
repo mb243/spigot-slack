@@ -82,6 +82,7 @@ public class main extends JavaPlugin implements Listener {
             if (sender.hasPermission("spigotslack.reload")) {
                 this.reloadConfig();
                 config = getConfig();
+                consoleManager.setConfig(config);
                 sender.sendMessage("Config reloaded!");
                 return true;
             }

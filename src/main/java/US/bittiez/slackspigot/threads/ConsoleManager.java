@@ -12,6 +12,11 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 
 public class ConsoleManager extends AbstractAppender {
 
@@ -22,6 +27,10 @@ public class ConsoleManager extends AbstractAppender {
     static PatternLayout layout;
     static {
         PatternLayout.createDefaultLayout();
+    }
+
+    public void setConfig(FileConfiguration fileConfiguration){
+        this.config = fileConfiguration;
     }
 
     public ConsoleManager(SlackChannel slackChannel, SlackSession slackSession, FileConfiguration fileConfiguration){
@@ -43,7 +52,15 @@ public class ConsoleManager extends AbstractAppender {
 
     @Override
     public void append(LogEvent logEvent) {
-        sendMessageToSlack(logEvent.getMessage().getFormattedMessage());
+
+        String message = logEvent.getMessage().getFormattedMessage();
+        if(config.getBoolean("console-time", true)){
+            Date date = new Date(logEvent.getTimeMillis());
+            DateFormat dateFormat = new SimpleDateFormat(config.getString("console-time-format", "[HH:mm:ss] "));
+            message = dateFormat.format(date) + message;
+        }
+
+        sendMessageToSlack(message);
     }
 
     private void sendMessageToSlack(String message){
@@ -51,6 +68,13 @@ public class ConsoleManager extends AbstractAppender {
             return;
         message = ChatColor.stripColor(message); //Removes colors
         message = message.replaceAll("(\\[m)$", ""); //Replaces the weird [m at the end of console chat messages
+        message = message.replaceAll("(\\[[0-9]*;[0-9]*;[0-9]*m)", ""); //Remove the console color code things that look like -> [0;32;1m
+
+        List<String> filters = config.getStringList("console-regex-filter");
+        if(filters.size() > 0)
+            for(String filter : filters)
+                if(!filter.isEmpty())
+                    message = message.replaceAll(filter, "");
 
         SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(message).build();
         SlackChatConfiguration chatConfig = SlackChatConfiguration.getConfiguration().withName("CONSOLE").withIcon(config.getString("console-avatar-url", "http://i65.tinypic.com/14jak2x.png"));

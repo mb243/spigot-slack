@@ -24,3 +24,9 @@ remove-mentions: false
 enable-console: true
 console-channel: "console-chan"
 console-avatar-url: ""
+#display console timestamp
+console-time: true
+#See https://developer.android.com/reference/java/text/SimpleDateFormat.html for possible format patterns
+console-time-format: "[HH:mm:ss] "
+#Add as many filters as needed, just add a , between them like so: ["([0-9]*)", "([a-Z])"]
+console-regex-filter: [""]

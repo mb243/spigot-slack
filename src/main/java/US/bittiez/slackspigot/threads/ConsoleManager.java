@@ -12,6 +12,10 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class ConsoleManager extends AbstractAppender {
 
@@ -43,7 +47,15 @@ public class ConsoleManager extends AbstractAppender {
 
     @Override
     public void append(LogEvent logEvent) {
-        sendMessageToSlack(logEvent.getMessage().getFormattedMessage());
+
+        String message = logEvent.getMessage().getFormattedMessage();
+        if(config.getBoolean("console-time")){
+            Date date = new Date(logEvent.getTimeMillis());
+            DateFormat dateFormat = new SimpleDateFormat(config.getString("console-time-format"));
+            message = dateFormat.format(date) + message;
+        }
+
+        sendMessageToSlack(message);
     }
 
     private void sendMessageToSlack(String message){

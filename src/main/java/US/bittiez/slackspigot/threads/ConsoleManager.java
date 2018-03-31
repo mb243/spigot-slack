@@ -28,6 +28,10 @@ public class ConsoleManager extends AbstractAppender {
         PatternLayout.createDefaultLayout();
     }
 
+    public void setConfig(FileConfiguration fileConfiguration){
+        this.config = fileConfiguration;
+    }
+
     public ConsoleManager(SlackChannel slackChannel, SlackSession slackSession, FileConfiguration fileConfiguration){
         super("Spigot-Slack Console", null, layout, false);
         channel = slackChannel;
@@ -49,9 +53,9 @@ public class ConsoleManager extends AbstractAppender {
     public void append(LogEvent logEvent) {
 
         String message = logEvent.getMessage().getFormattedMessage();
-        if(config.getBoolean("console-time")){
+        if(config.getBoolean("console-time", true)){
             Date date = new Date(logEvent.getTimeMillis());
-            DateFormat dateFormat = new SimpleDateFormat(config.getString("console-time-format"));
+            DateFormat dateFormat = new SimpleDateFormat(config.getString("console-time-format", "[HH:mm:ss] "));
             message = dateFormat.format(date) + message;
         }
 

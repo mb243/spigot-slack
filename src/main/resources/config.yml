@@ -6,6 +6,9 @@ first-join-format: "Welcome [PLAYER] to the server!"
 normal-join-format: "[PLAYER] has logged in."
 player-quit-format: "[PLAYER] has left the server."
 player-advancement-format: "[PLAYER] has earned the advancement: [ADVANCEMENT]"
+player-death-format: "[DEATHMSG]"
+
+show-player-deaths: true
 
 #These are the slack channels that will be sent to the server chat:
 incoming-channels: ["chan1", "chan2"]

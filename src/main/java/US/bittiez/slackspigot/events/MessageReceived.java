@@ -44,7 +44,8 @@ public class MessageReceived implements Runnable {
                 return;
 
         if(channelOnWhichMessageWasPosted.getName().equals(config.getString("console-channel", ""))){
-            server.dispatchCommand(server.getConsoleSender(), messageContent);
+            if(config.getStringList("authorized-users").contains(messageSender.getId()))
+                server.dispatchCommand(server.getConsoleSender(), messageContent);
             return;
         }
 

@@ -31,4 +31,3 @@ ignore-ids: ["BAAAAAAQ"]
 `spigotslack.silent`: Prevent join/quit messages from being sent to Slack
 
 `spigotslack.reload`: Use `/ssreload`
-

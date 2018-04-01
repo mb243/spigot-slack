@@ -73,10 +73,6 @@ public class MessageReceived implements Runnable {
         }
     }
 
-    private void handleConsoleCommand() {
-
-    }
-
     private String convertMentionsToUser(String message) {
         final String regex = "<@([A-Za-z0-9]*)>";
 

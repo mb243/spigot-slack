@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MessageReceived implements Runnable{
+public class MessageReceived implements Runnable {
 
     private SlackChannel channelOnWhichMessageWasPosted;
     private String messageContent;
@@ -24,7 +24,7 @@ public class MessageReceived implements Runnable{
     private FileConfiguration config;
     private Server server;
 
-    public MessageReceived(SlackMessagePosted event, SlackSession slackSession, FileConfiguration fileConfiguration, Server spigotServer){
+    public MessageReceived(SlackMessagePosted event, SlackSession slackSession, FileConfiguration fileConfiguration, Server spigotServer) {
         channelOnWhichMessageWasPosted = event.getChannel();
         messageContent = event.getMessageContent();
         messageSender = event.getSender();
@@ -36,20 +36,25 @@ public class MessageReceived implements Runnable{
 
     @Override
     public void run() {
-        if(messageSender.getId().equals(session.sessionPersona().getId()))
+        if (messageSender.getId().equals(session.sessionPersona().getId()))
             return;
 
-        MessagePosted mp = new GsonBuilder().create().fromJson(jsonSource, MessagePosted.class);
+        for (String id : config.getStringList("ignore-ids"))
+            if (messageSender.getId().equals(id))
+                return;
 
-        if(mp.file != null) {
-            if(config.getBoolean("ignore-attachments", false))
+        if(channelOnWhichMessageWasPosted.getName().equals(config.getString("console-channel", ""))){
+            if(config.getStringList("authorized-users").contains(messageSender.getId()))
+                server.dispatchCommand(server.getConsoleSender(), messageContent);
+            return;
+        }
+
+        MessagePosted mp = new GsonBuilder().create().fromJson(jsonSource, MessagePosted.class);
+        if (mp.file != null) {
+            if (config.getBoolean("ignore-attachments", false))
                 return;
             messageContent = mp.file.name + ": " + mp.file.permalink;
         }
-
-        for(String id : config.getStringList("ignore-ids"))
-            if (messageSender.getId().equals(id))
-                return;
 
         List<String> channels = config.getStringList("incoming-channels");
         for (String chan : channels) {
@@ -59,7 +64,7 @@ public class MessageReceived implements Runnable{
                         .replace("[MSG]", messageContent)
                         .replace("[CHANNEL]", channelOnWhichMessageWasPosted.getName());
                 formattedMsg = ChatColor.translateAlternateColorCodes('&', formattedMsg);
-                if(!config.getBoolean("remove-mentions"))formattedMsg = convertMentionsToUser(formattedMsg);
+                if (!config.getBoolean("remove-mentions")) formattedMsg = convertMentionsToUser(formattedMsg);
                 formattedMsg = parseMentions(formattedMsg);
                 formattedMsg = formattedMsg.trim();
                 server.broadcastMessage(formattedMsg);
@@ -68,7 +73,7 @@ public class MessageReceived implements Runnable{
         }
     }
 
-    private String convertMentionsToUser(String message){
+    private String convertMentionsToUser(String message) {
         final String regex = "<@([A-Za-z0-9]*)>";
 
         final Pattern pattern = Pattern.compile(regex);
@@ -79,7 +84,7 @@ public class MessageReceived implements Runnable{
             System.out.println("Group 1: " + matcher.group(1));
 
             for (SlackUser user : session.getUsers())
-                if (user.getId().equals(matcher.group(1))){
+                if (user.getId().equals(matcher.group(1))) {
                     message = message.replace(matcher.group(0), "@" + user.getUserName());
                     break;
                 }
@@ -88,7 +93,7 @@ public class MessageReceived implements Runnable{
         return message;
     }
 
-    private String parseMentions(String message){
+    private String parseMentions(String message) {
         final String regex = "(<@[A-Za-z0-9]*>)";
         message = message.replaceAll(regex, "");
         return message;

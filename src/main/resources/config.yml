@@ -30,3 +30,5 @@ console-time: true
 console-time-format: "[HH:mm:ss] "
 #Add as many filters as needed, just add a , between them like so: ["([0-9]*)", "([a-Z])"]
 console-regex-filter: [""]
+#Add any users(ID) that should be authorized to send console commands slack->server
+authorized-users: [""]

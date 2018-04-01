@@ -1,8 +1,7 @@
 package US.bittiez.slackspigot.threads;
 
+import US.bittiez.slackspigot.events.OutgoingConsoleMessage;
 import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackChatConfiguration;
-import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -16,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 
 public class ConsoleManager extends AbstractAppender {
@@ -23,6 +23,7 @@ public class ConsoleManager extends AbstractAppender {
     private SlackChannel channel;
     private SlackSession session;
     private FileConfiguration config;
+    private ExecutorService executorService;
 
     static PatternLayout layout;
     static {
@@ -33,11 +34,12 @@ public class ConsoleManager extends AbstractAppender {
         this.config = fileConfiguration;
     }
 
-    public ConsoleManager(SlackChannel slackChannel, SlackSession slackSession, FileConfiguration fileConfiguration){
+    public ConsoleManager(SlackChannel slackChannel, SlackSession slackSession, FileConfiguration fileConfiguration, ExecutorService executorService){
         super("Spigot-Slack Console", null, layout, false);
         channel = slackChannel;
         session = slackSession;
         config = fileConfiguration;
+        this.executorService = executorService;
         try {
             ((Logger) LogManager.getRootLogger()).addAppender(this);
         } catch (Exception e) {
@@ -75,9 +77,8 @@ public class ConsoleManager extends AbstractAppender {
             for(String filter : filters)
                 if(!filter.isEmpty())
                     message = message.replaceAll(filter, "");
-
-        SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(message).build();
-        SlackChatConfiguration chatConfig = SlackChatConfiguration.getConfiguration().withName("CONSOLE").withIcon(config.getString("console-avatar-url", "http://i65.tinypic.com/14jak2x.png"));
-        session.sendMessage(channel, msg, chatConfig);
+        if(message.length() < 1)
+            return;
+        executorService.execute(new OutgoingConsoleMessage(message, session, channel, config));
     }
 }

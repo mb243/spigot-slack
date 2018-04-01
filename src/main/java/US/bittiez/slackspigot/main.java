@@ -70,7 +70,7 @@ public class main extends JavaPlugin implements Listener {
             PluginManager pm = getServer().getPluginManager();
             pm.registerEvents(this, this);
             if(config.getBoolean("enable-console", false))
-                consoleManager = new ConsoleManager(session.findChannelByName(config.getString("console-channel", "abc123nochannelforme")), session, config);
+                consoleManager = new ConsoleManager(session.findChannelByName(config.getString("console-channel", "abc123nochannelforme")), session, config, executor);
         } else {
             getLogger().log(Level.INFO, "Could not load slack-spigot.");
         }

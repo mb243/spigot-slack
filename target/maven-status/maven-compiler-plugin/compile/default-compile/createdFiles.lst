@@ -1,7 +1,9 @@
+US\bittiez\slackspigot\events\OutgoingConsoleMessage.class
 US\bittiez\slackspigot\threads\ConsoleManager.class
 US\bittiez\slackspigot\main.class
 US\bittiez\slackspigot\events\MessageReceived.class
 US\bittiez\slackspigot\MessagePosted.class
 US\bittiez\slackspigot\MessagePosted$UserProfile.class
+US\bittiez\slackspigot\events\OutgoingMessage.class
 US\bittiez\slackspigot\MessagePosted$File.class
 US\bittiez\slackspigot\main$1.class

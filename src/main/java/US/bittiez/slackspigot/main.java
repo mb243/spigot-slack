@@ -1,15 +1,13 @@
 package US.bittiez.slackspigot;
 
 import US.bittiez.slackspigot.events.MessageReceived;
+import US.bittiez.slackspigot.events.OutgoingMessage;
 import US.bittiez.slackspigot.threads.ConsoleManager;
 import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackChatConfiguration;
-import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -72,7 +70,7 @@ public class main extends JavaPlugin implements Listener {
             PluginManager pm = getServer().getPluginManager();
             pm.registerEvents(this, this);
             if(config.getBoolean("enable-console", false))
-                consoleManager = new ConsoleManager(session.findChannelByName(config.getString("console-channel", "abc123nochannelforme")), session, config);
+                consoleManager = new ConsoleManager(session.findChannelByName(config.getString("console-channel", "abc123nochannelforme")), session, config, executor);
         } else {
             getLogger().log(Level.INFO, "Could not load slack-spigot.");
         }
@@ -151,12 +149,8 @@ public class main extends JavaPlugin implements Listener {
     private void sendMessageToSlack(SlackChannel chan, String formatterMsg, Player player){
         if(formatterMsg.length() < 1)
             return;
-        formatterMsg = ChatColor.stripColor(formatterMsg);
 
-        SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(formatterMsg).build();
-        SlackChatConfiguration config = SlackChatConfiguration.getConfiguration().withName(player.getName()).withIcon("https://www.mc-heads.net/avatar/" + player.getUniqueId());
-        session.sendMessage(chan, msg, config);
-        //session.sendMessage(chan, msg);
+        executor.execute(new OutgoingMessage(formatterMsg, player, session, chan));
     }
 
     private void createConfig() {

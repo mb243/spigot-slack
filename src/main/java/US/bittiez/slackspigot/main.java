@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -88,6 +89,16 @@ public class main extends JavaPlugin implements Listener {
             }
         }
         return false;
+    }
+
+    @EventHandler
+    public void onPlayerDeathEvent(PlayerDeathEvent e){
+        if(config.getBoolean("show-player-deaths", true)){
+            String formattedMsg = config.getString("player-death-format", "[DEATHMSG]");
+            formattedMsg = formattedMsg.replace("[DEATHMSG]", e.getDeathMessage());
+            formattedMsg = formattedMsg.replace("[PLAYER]", e.getEntity().getName());
+            sendMessageToSlack(chatChannel, formattedMsg, e.getEntity());
+        }
     }
 
     @EventHandler

@@ -6,7 +6,7 @@ first-join-format: "Welcome [PLAYER] to the server!"
 normal-join-format: "[PLAYER] has logged in."
 player-quit-format: "[PLAYER] has left the server."
 player-advancement-format: "[PLAYER] has earned the advancement: [ADVANCEMENT]"
-player-death-format: "[DEATHMSG]"
+player-death-format: "[DEATHMSG]" #Also supports [PLAYER]
 
 show-player-deaths: true
 

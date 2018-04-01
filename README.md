@@ -3,7 +3,7 @@ Slack plugin for Spigot
 
 ## Configuration file
 
-The default configuration file is available [here](https://github.com/mb243/spigot-slack/blob/update-readme/src/main/resources/config.yml).
+The default configuration file is available [here](https://github.com/mb243/spigot-slack/blob/master/src/main/resources/config.yml).
 
 ## Ignoring the bot's own messages
 

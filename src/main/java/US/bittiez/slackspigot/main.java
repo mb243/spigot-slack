@@ -71,6 +71,14 @@ public class main extends JavaPlugin implements Listener {
             pm.registerEvents(this, this);
             if(config.getBoolean("enable-console", false))
                 consoleManager = new ConsoleManager(session.findChannelByName(config.getString("console-channel", "abc123nochannelforme")), session, config, executor);
+            if(config.getBoolean("send-started-message")){
+                executor.execute(new OutgoingMessage(config.getString("started-message", "The server has started!"),
+                        config.getString("started-user-name", "Server"),
+                        config.getString("started-avatar-url", "http://i65.tinypic.com/14jak2x.png"),
+                        session,
+                        chatChannel
+                        ));
+            }
         } else {
             getLogger().log(Level.INFO, "Could not load slack-spigot.");
         }

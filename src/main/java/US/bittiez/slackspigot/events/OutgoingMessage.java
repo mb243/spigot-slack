@@ -11,6 +11,8 @@ public class OutgoingMessage implements Runnable {
 
     private String formattedMessage;
     private Player player;
+    private String username;
+    private String icon;
     private SlackSession session;
     private SlackChannel chan;
 
@@ -22,12 +24,25 @@ public class OutgoingMessage implements Runnable {
         this.chan = chan;
     }
 
+    public OutgoingMessage(String formattedMessage, String username, String icon, SlackSession session, SlackChannel chan){
+
+        this.formattedMessage = formattedMessage;
+        this.username = username;
+        this.session = session;
+        this.chan = chan;
+        this.icon = icon;
+    }
+
     @Override
     public void run() {
         formattedMessage = ChatColor.stripColor(formattedMessage);
 
         SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(formattedMessage).build();
-        SlackChatConfiguration config = SlackChatConfiguration.getConfiguration().withName(player.getName()).withIcon("https://www.mc-heads.net/avatar/" + player.getUniqueId());
+        SlackChatConfiguration config;
+        if(player != null)
+            config = SlackChatConfiguration.getConfiguration().withName(player.getName()).withIcon("https://www.mc-heads.net/avatar/" + player.getUniqueId());
+        else
+            config = SlackChatConfiguration.getConfiguration().withName(username).withIcon(icon);
         session.sendMessage(chan, msg, config);
         try {
             Thread.sleep(1000);

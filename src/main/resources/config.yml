@@ -36,3 +36,8 @@ console-time-format: "[HH:mm:ss] "
 console-regex-filter: [""]
 #Add any users(ID) that should be authorized to send console commands slack->server
 authorized-users: [""]
+
+send-started-message: true
+started-message: "The server has started!"
+started-user-name: "Server"
+started-avatar-url: ""

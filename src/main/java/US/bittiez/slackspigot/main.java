@@ -76,8 +76,8 @@ public class main extends JavaPlugin implements Listener {
                         config.getString("started-user-name", "Server"),
                         config.getString("started-avatar-url", "http://i65.tinypic.com/14jak2x.png"),
                         session,
-                        chatChannel
-                        ));
+                        chatChannel,
+                        config));
             }
         } else {
             getLogger().log(Level.INFO, "Could not load slack-spigot.");
@@ -158,7 +158,7 @@ public class main extends JavaPlugin implements Listener {
         if(formatterMsg.length() < 1)
             return;
 
-        executor.execute(new OutgoingMessage(formatterMsg, player, session, chan));
+        executor.execute(new OutgoingMessage(formatterMsg, player, session, chan, config));
     }
 
     private void createConfig() {

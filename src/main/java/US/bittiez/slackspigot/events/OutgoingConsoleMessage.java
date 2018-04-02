@@ -29,7 +29,7 @@ public class OutgoingConsoleMessage implements Runnable {
         session.sendMessage(chan, msg, chatConfig);
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(config.getInt("post-message-delay", 1000));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

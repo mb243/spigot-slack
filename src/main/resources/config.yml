@@ -41,3 +41,6 @@ send-started-message: true
 started-message: "The server has started!"
 started-user-name: "Server"
 started-avatar-url: ""
+
+#The delay between messages sent to slack. Slack has a 1 message per second limit but allows for small bursts (This is in Milliseconds, 1000 = 1 second, etc)
+post-message-delay: 1000

@@ -54,12 +54,12 @@ public class ConsoleManager extends AbstractAppender {
 
     @Override
     public void append(LogEvent logEvent) {
+        String message = config.getString("console-format", "[TIMESTAMP][MESSAGE]").replace("[MESSAGE]", logEvent.getMessage().getFormattedMessage());
 
-        String message = logEvent.getMessage().getFormattedMessage();
         if(config.getBoolean("console-time", true)){
             Date date = new Date(logEvent.getTimeMillis());
             DateFormat dateFormat = new SimpleDateFormat(config.getString("console-time-format", "[HH:mm:ss] "));
-            message = dateFormat.format(date) + message;
+            message = message.replace("[TIMESTAMP]", dateFormat.format(date));
         }
 
         sendMessageToSlack(message);

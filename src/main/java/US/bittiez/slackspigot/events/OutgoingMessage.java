@@ -48,7 +48,7 @@ public class OutgoingMessage implements Runnable {
             //System.out.println("Group 1: " + matcher.group(1));    //  blahblah
 
             for (SlackUser user : session.getUsers())
-                if (user.getUserName().equals(matcher.group(1))) {
+                if (user.getUserName().equalsIgnoreCase(matcher.group(1))) {
                     formattedMessage = formattedMessage.replace(matcher.group(0), "<@" + user.getId() + ">");
                     break;
                 }

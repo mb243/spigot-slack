@@ -80,9 +80,6 @@ public class MessageReceived implements Runnable {
         final Matcher matcher = pattern.matcher(message);
 
         while (matcher.find()) {
-            System.out.println("Full match: " + matcher.group(0));
-            System.out.println("Group 1: " + matcher.group(1));
-
             for (SlackUser user : session.getUsers())
                 if (user.getId().equals(matcher.group(1))) {
                     message = message.replace(matcher.group(0), "@" + user.getUserName());

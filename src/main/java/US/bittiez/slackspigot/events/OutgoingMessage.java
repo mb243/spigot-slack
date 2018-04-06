@@ -1,12 +1,12 @@
 package US.bittiez.slackspigot.events;
 
-import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackChatConfiguration;
-import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
-import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OutgoingMessage implements Runnable {
 
@@ -37,9 +37,30 @@ public class OutgoingMessage implements Runnable {
         this.fileConfiguration = fileConfiguration;
     }
 
+    private String convertMentions(String formattedMessage){
+        final String regex = "@(.+.+)";
+
+        final Pattern pattern = Pattern.compile(regex);
+        final Matcher matcher = pattern.matcher(formattedMessage);
+
+        while (matcher.find()) {
+            //System.out.println("Full match: " + matcher.group(0)); //  @blahblah
+            //System.out.println("Group 1: " + matcher.group(1));    //  blahblah
+
+            for (SlackUser user : session.getUsers())
+                if (user.getUserName().equals(matcher.group(1))) {
+                    formattedMessage = formattedMessage.replace(matcher.group(0), "<@" + user.getId() + ">");
+                    break;
+                }
+        }
+
+        return formattedMessage;
+    }
+
     @Override
     public void run() {
         formattedMessage = ChatColor.stripColor(formattedMessage);
+        formattedMessage = convertMentions(formattedMessage);
 
         SlackPreparedMessage msg = new SlackPreparedMessage.Builder().withMessage(formattedMessage).build();
         SlackChatConfiguration config;
